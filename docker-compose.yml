@@ -10,6 +10,7 @@ services:
       - VIEWER_PINCODE=0000
       - USER_PINCODE=1234
       - ADMIN_PINCODE=admin123
+      - CURATED_PINCODE=5555
       - SECRET_KEY=your-super-secret-key-change-me
       - PORT=3000
     volumes:

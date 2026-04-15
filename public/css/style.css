@@ -266,6 +266,53 @@ body {
     margin-top: 10px;
 }
 
+.btn-youtube {
+    background: #ff0000;
+    color: white;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.3);
+}
+
+.btn-youtube:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 0, 0, 0.4);
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.divider span {
+    padding: 0 20px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* YouTube Form */
+.youtube-form .section-header {
+    margin-bottom: 20px;
+}
+
+.youtube-form .section-header h3 {
+    font-size: 1.2rem;
+    color: var(--text);
+}
+
+.youtube-icon {
+    color: #ff0000;
+}
+
 /* Alerts */
 .alert {
     padding: 16px 20px;
@@ -310,9 +357,24 @@ header {
     position: relative;
 }
 
-.header-content .btn-logout {
+.header-buttons {
     position: absolute;
     left: 24px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-curated {
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    color: white;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.btn-curated:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
 }
 
 .logo {
@@ -341,6 +403,105 @@ header h1 {
     max-width: 900px;
     margin: 0 auto;
     padding: 40px 24px;
+}
+
+/* Announcement Section */
+.announcement-section {
+    background: var(--bg-card);
+    padding: 24px 32px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.announcement-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+.btn-edit-announcement {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-edit-announcement:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-edit-announcement svg {
+    width: 18px;
+    height: 18px;
+}
+
+.announcement-form {
+    display: none;
+    margin-top: 16px;
+}
+
+.announcement-form input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg-light);
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.announcement-form input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.announcement-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-save {
+    background: var(--success);
+    color: white;
+    padding: 10px 24px;
+}
+
+.btn-save:hover {
+    opacity: 0.9;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+}
+
+.btn-cancel:hover {
+    background: var(--border);
 }
 
 /* Section Headers */
@@ -606,6 +767,21 @@ header h1 {
     background: #000;
 }
 
+.youtube-embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+}
+
+.youtube-embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .media-info {
     padding: 24px;
 }
@@ -637,6 +813,213 @@ header h1 {
 
 .delete-form {
     text-align: left;
+}
+
+/* Our Story Section */
+.our-story-section {
+    margin-top: 50px;
+}
+
+.our-story-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 50px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.our-story-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+}
+
+.our-story-card svg {
+    width: 60px;
+    height: 60px;
+    color: var(--primary-light);
+    margin-bottom: 20px;
+}
+
+.our-story-card h3 {
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.our-story-card p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.coming-soon-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--gradient-1);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.btn-story {
+    background: var(--gradient-2);
+    color: white;
+    padding: 14px 32px;
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+.btn-story:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+}
+
+/* Story Page (Coming Soon) */
+.story-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+}
+
+.story-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+    z-index: 1;
+}
+
+.story-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.story-box {
+    background: var(--bg-card);
+    padding: 50px 40px;
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.story-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+}
+
+.coming-soon-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.coming-soon-icon svg {
+    width: 50px;
+    height: 50px;
+    color: white;
+}
+
+.story-box h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 24px;
+}
+
+.coming-soon-text {
+    margin-bottom: 30px;
+}
+
+.coming-soon-text .badge {
+    display: inline-block;
+    background: var(--gradient-1);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.coming-soon-text p {
+    color: var(--text);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.coming-soon-text p.sub {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.access-main {
+    margin-top: 20px;
+}
+
+.access-main h3 {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: 24px;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
+.back-link svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* Footer */

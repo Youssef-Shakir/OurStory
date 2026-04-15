@@ -13,12 +13,22 @@
             <div class="logo">
                 <h1>يوسف و كيان</h1>
             </div>
-            <a href="/logout" class="btn btn-logout">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
-                </svg>
-                <span>خروج</span>
-            </a>
+            <div class="header-buttons">
+                <% if (isAdmin) { %>
+                <a href="/curated" class="btn btn-curated">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span>الألبوم المميز</span>
+                </a>
+                <% } %>
+                <a href="/logout" class="btn btn-logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                    </svg>
+                    <span>خروج</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -26,6 +36,26 @@
         <% if (message) { %>
             <div class="alert <%= message.type %>"><%= message.text %></div>
         <% } %>
+
+        <!-- Announcement Section -->
+        <section class="announcement-section">
+            <p class="announcement-text"><%= announcement %></p>
+            <% if (isAdmin) { %>
+                <button class="btn btn-edit-announcement" onclick="toggleAnnouncementEdit()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                </button>
+                <form action="/update-announcement" method="POST" class="announcement-form" id="announcementForm">
+                    <input type="text" name="announcement" value="<%= announcement %>" placeholder="أدخل النص هنا...">
+                    <div class="announcement-buttons">
+                        <button type="submit" class="btn btn-save">حفظ</button>
+                        <button type="button" class="btn btn-cancel" onclick="toggleAnnouncementEdit()">إلغاء</button>
+                    </div>
+                </form>
+            <% } %>
+        </section>
 
         <!-- Upload Section -->
         <% if (canUpload) { %>
@@ -82,6 +112,62 @@
                     <span>رفع الذكرى</span>
                 </button>
             </form>
+
+            <div class="divider">
+                <span>أو</span>
+            </div>
+
+            <!-- YouTube Upload -->
+            <form action="/upload-youtube" method="POST" class="upload-form youtube-form">
+                <div class="section-header">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="youtube-icon">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    <h3>إضافة فيديو يوتيوب</h3>
+                </div>
+                <div class="form-group">
+                    <label for="youtubeUrl">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <span>رابط يوتيوب</span>
+                    </label>
+                    <input type="url" id="youtubeUrl" name="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..." required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ytDate">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>التاريخ</span>
+                        </label>
+                        <input type="date" id="ytDate" name="date">
+                    </div>
+                    <div class="form-group">
+                        <label for="ytDescription">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="17" y1="10" x2="3" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="17" y1="18" x2="3" y2="18"></line>
+                            </svg>
+                            <span>الوصف</span>
+                        </label>
+                        <input type="text" id="ytDescription" name="description" placeholder="وصف الفيديو">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-youtube">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    <span>إضافة فيديو</span>
+                </button>
+            </form>
         </section>
         <% } %>
 
@@ -114,7 +200,16 @@
                             </div>
                             <div class="timeline-content">
                                 <div class="media-card">
-                                    <% if (memory.type === 'video') { %>
+                                    <% if (memory.type === 'youtube') { %>
+                                        <div class="youtube-embed">
+                                            <iframe
+                                                src="https://www.youtube.com/embed/<%= memory.youtubeId %>"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    <% } else if (memory.type === 'video') { %>
                                         <video controls>
                                             <source src="/uploads/<%= memory.filename %>" type="video/mp4">
                                             المتصفح لا يدعم الفيديو
@@ -164,10 +259,30 @@
 
     <script>
         // File input display
-        document.getElementById('media').addEventListener('change', function(e) {
-            const fileName = e.target.files[0]?.name || 'لم يتم اختيار ملف';
-            document.querySelector('.file-name').textContent = fileName;
-        });
+        const mediaInput = document.getElementById('media');
+        if (mediaInput) {
+            mediaInput.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name || 'لم يتم اختيار ملف';
+                document.querySelector('.file-name').textContent = fileName;
+            });
+        }
+
+        // Toggle announcement edit form
+        function toggleAnnouncementEdit() {
+            const form = document.getElementById('announcementForm');
+            const text = document.querySelector('.announcement-text');
+            const btn = document.querySelector('.btn-edit-announcement');
+
+            if (form.style.display === 'none' || !form.style.display) {
+                form.style.display = 'block';
+                text.style.display = 'none';
+                btn.style.display = 'none';
+            } else {
+                form.style.display = 'none';
+                text.style.display = 'block';
+                btn.style.display = 'flex';
+            }
+        }
     </script>
 </body>
 </html>

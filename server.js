@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 const VIEWER_PINCODE = process.env.VIEWER_PINCODE || '0000';
 const USER_PINCODE = process.env.USER_PINCODE || '1234';
 const ADMIN_PINCODE = process.env.ADMIN_PINCODE || 'admin123';
+const CURATED_PINCODE = process.env.CURATED_PINCODE || '5555';
 
 // Ensure uploads folder exists
 const uploadsDir = path.join(__dirname, 'public', 'uploads');
@@ -18,6 +19,13 @@ if (!fs.existsSync(uploadsDir)) {
 
 // In-memory photo storage (use database in production)
 let memories = [];
+
+// Editable announcement text (admin only)
+let announcementText = 'مرحباً بكم في ألبوم ذكرياتنا';
+
+// Curated album (admin only can edit)
+let curatedMemories = [];
+let curatedAnnouncementText = 'لحظات مميزة';
 
 // Multer config for file uploads
 const storage = multer.diskStorage({
@@ -97,16 +105,20 @@ app.post('/login', (req, res) => {
 
     if (pincode === ADMIN_PINCODE) {
         req.session.authenticated = true;
-        req.session.role = 'admin'; // can view, upload, delete
+        req.session.role = 'admin';
         res.redirect('/album');
     } else if (pincode === USER_PINCODE) {
         req.session.authenticated = true;
-        req.session.role = 'user'; // can view, upload
+        req.session.role = 'user';
         res.redirect('/album');
     } else if (pincode === VIEWER_PINCODE) {
         req.session.authenticated = true;
-        req.session.role = 'viewer'; // can only view
+        req.session.role = 'viewer';
         res.redirect('/album');
+    } else if (pincode === CURATED_PINCODE) {
+        req.session.authenticated = true;
+        req.session.role = 'curated_viewer';
+        res.redirect('/curated');
     } else {
         res.render('login', { error: 'الرمز غير صحيح. حاول مرة أخرى.' });
     }
@@ -118,10 +130,34 @@ app.get('/album', requireAuth, (req, res) => {
         memories,
         message: req.session.message,
         canUpload: role === 'admin' || role === 'user',
-        canDelete: role === 'admin'
+        canDelete: role === 'admin',
+        isAdmin: role === 'admin',
+        announcement: announcementText
     });
     req.session.message = null;
 });
+
+app.post('/update-announcement', requireAuth, requireAdmin, (req, res) => {
+    const { announcement } = req.body;
+    if (announcement !== undefined) {
+        announcementText = announcement.trim();
+        req.session.message = { type: 'success', text: 'تم تحديث النص بنجاح!' };
+    }
+    res.redirect('/album');
+});
+
+// Helper to extract YouTube video ID
+const getYouTubeId = (url) => {
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+        /youtube\.com\/shorts\/([^&\n?#]+)/
+    ];
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
+    }
+    return null;
+};
 
 app.post('/upload', requireAuth, requireUpload, upload.single('media'), (req, res) => {
     if (!req.file) {
@@ -141,6 +177,32 @@ app.post('/upload', requireAuth, requireUpload, upload.single('media'), (req, re
     res.redirect('/album');
 });
 
+app.post('/upload-youtube', requireAuth, requireUpload, (req, res) => {
+    const { youtubeUrl, description, date } = req.body;
+
+    if (!youtubeUrl) {
+        req.session.message = { type: 'error', text: 'لم يتم إدخال رابط' };
+        return res.redirect('/album');
+    }
+
+    const videoId = getYouTubeId(youtubeUrl);
+    if (!videoId) {
+        req.session.message = { type: 'error', text: 'رابط يوتيوب غير صالح' };
+        return res.redirect('/album');
+    }
+
+    memories.push({
+        id: Date.now(),
+        type: 'youtube',
+        youtubeId: videoId,
+        description: description || '',
+        date: date || ''
+    });
+
+    req.session.message = { type: 'success', text: 'تم إضافة فيديو يوتيوب بنجاح!' };
+    res.redirect('/album');
+});
+
 app.post('/delete/:id', requireAuth, requireAdmin, (req, res) => {
     const id = parseInt(req.params.id);
     const index = memories.findIndex(m => m.id === id);
@@ -156,6 +218,94 @@ app.post('/delete/:id', requireAuth, requireAdmin, (req, res) => {
     res.redirect('/album');
 });
 
+// Curated Album Routes
+app.get('/curated', requireAuth, (req, res) => {
+    const role = req.session.role;
+    const canEdit = role === 'admin';
+    res.render('curated', {
+        memories: curatedMemories,
+        message: req.session.message,
+        canEdit,
+        announcement: curatedAnnouncementText
+    });
+    req.session.message = null;
+});
+
+app.post('/curated/upload', requireAuth, requireAdmin, upload.single('media'), (req, res) => {
+    if (!req.file) {
+        req.session.message = { type: 'error', text: 'لم يتم اختيار ملف' };
+        return res.redirect('/curated');
+    }
+
+    curatedMemories.push({
+        id: Date.now(),
+        filename: req.file.filename,
+        type: getFileType(req.file.filename),
+        description: req.body.description || '',
+        date: req.body.date || ''
+    });
+
+    req.session.message = { type: 'success', text: 'تم رفع الذكرى بنجاح!' };
+    res.redirect('/curated');
+});
+
+app.post('/curated/upload-youtube', requireAuth, requireAdmin, (req, res) => {
+    const { youtubeUrl, description, date } = req.body;
+
+    if (!youtubeUrl) {
+        req.session.message = { type: 'error', text: 'لم يتم إدخال رابط' };
+        return res.redirect('/curated');
+    }
+
+    const videoId = getYouTubeId(youtubeUrl);
+    if (!videoId) {
+        req.session.message = { type: 'error', text: 'رابط يوتيوب غير صالح' };
+        return res.redirect('/curated');
+    }
+
+    curatedMemories.push({
+        id: Date.now(),
+        type: 'youtube',
+        youtubeId: videoId,
+        description: description || '',
+        date: date || ''
+    });
+
+    req.session.message = { type: 'success', text: 'تم إضافة فيديو يوتيوب بنجاح!' };
+    res.redirect('/curated');
+});
+
+app.post('/curated/delete/:id', requireAuth, requireAdmin, (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = curatedMemories.findIndex(m => m.id === id);
+
+    if (index !== -1) {
+        const memory = curatedMemories[index];
+        if (memory.filename) {
+            const filepath = path.join(uploadsDir, memory.filename);
+            if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
+        }
+        curatedMemories.splice(index, 1);
+        req.session.message = { type: 'success', text: 'تم حذف الذكرى' };
+    }
+
+    res.redirect('/curated');
+});
+
+app.post('/curated/update-announcement', requireAuth, requireAdmin, (req, res) => {
+    const { announcement } = req.body;
+    if (announcement !== undefined) {
+        curatedAnnouncementText = announcement.trim();
+        req.session.message = { type: 'success', text: 'تم تحديث النص بنجاح!' };
+    }
+    res.redirect('/curated');
+});
+
+// Our Story page
+app.get('/our-story', (req, res) => {
+    res.render('our-story');
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
@@ -166,4 +316,5 @@ app.listen(PORT, () => {
     console.log(`Viewer Pincode: ${VIEWER_PINCODE} (view only)`);
     console.log(`User Pincode: ${USER_PINCODE} (view + upload)`);
     console.log(`Admin Pincode: ${ADMIN_PINCODE} (view + upload + delete)`);
+    console.log(`Curated Pincode: ${CURATED_PINCODE} (curated album - view only)`);
 });
