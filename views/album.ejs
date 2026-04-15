@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>يوسف و كيان - ذكرياتنا</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <h1>يوسف و كيان</h1>
+            </div>
+            <a href="/logout" class="btn btn-logout">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                </svg>
+                <span>خروج</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <% if (message) { %>
+            <div class="alert <%= message.type %>"><%= message.text %></div>
+        <% } %>
+
+        <!-- Upload Section -->
+        <% if (canUpload) { %>
+        <section class="upload-section">
+            <div class="section-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+                <h2>إضافة ذكرى جديدة</h2>
+            </div>
+            <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="form-row">
+                    <div class="form-group file-input-wrapper">
+                        <label for="media">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            <span>اختر صورة أو فيديو</span>
+                        </label>
+                        <input type="file" id="media" name="media" accept="image/*,video/*" required>
+                        <span class="file-name">لم يتم اختيار ملف</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>التاريخ</span>
+                        </label>
+                        <input type="date" id="date" name="date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="17" y1="10" x2="3" y2="10"></line>
+                            <line x1="21" y1="6" x2="3" y2="6"></line>
+                            <line x1="21" y1="14" x2="3" y2="14"></line>
+                            <line x1="17" y1="18" x2="3" y2="18"></line>
+                        </svg>
+                        <span>الوصف</span>
+                    </label>
+                    <textarea id="description" name="description" rows="3" placeholder="ما قصة هذه الذكرى؟"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-upload">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                    </svg>
+                    <span>رفع الذكرى</span>
+                </button>
+            </form>
+        </section>
+        <% } %>
+
+        <!-- Timeline/Roadmap -->
+        <section class="roadmap">
+            <div class="section-header centered">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <h2>رحلة يوسف و كيان</h2>
+            </div>
+
+            <% if (memories.length === 0) { %>
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <p>لا توجد ذكريات بعد</p>
+                    <span>ارفع أول صورة أو فيديو!</span>
+                </div>
+            <% } else { %>
+                <div class="timeline">
+                    <% memories.forEach((memory, index) => { %>
+                        <div class="timeline-item" style="animation-delay: <%= index * 0.1 %>s">
+                            <div class="timeline-marker">
+                                <div class="marker-inner"></div>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="media-card">
+                                    <% if (memory.type === 'video') { %>
+                                        <video controls>
+                                            <source src="/uploads/<%= memory.filename %>" type="video/mp4">
+                                            المتصفح لا يدعم الفيديو
+                                        </video>
+                                    <% } else { %>
+                                        <img src="/uploads/<%= memory.filename %>" alt="ذكرى" loading="lazy">
+                                    <% } %>
+                                    <div class="media-info">
+                                        <% if (memory.date) { %>
+                                            <span class="media-date">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                                </svg>
+                                                <%= memory.date %>
+                                            </span>
+                                        <% } %>
+                                        <% if (memory.description) { %>
+                                            <p class="media-description"><%= memory.description %></p>
+                                        <% } %>
+                                        <% if (canDelete) { %>
+                                        <form action="/delete/<%= memory.id %>" method="POST" class="delete-form">
+                                            <button type="submit" class="btn btn-delete" onclick="return confirm('هل أنت متأكد من حذف هذه الذكرى؟')">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                                <span>حذف</span>
+                                            </button>
+                                        </form>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
+    <footer>
+        <p>صُنع بكل حب بواسطة يوسف ❤️</p>
+    </footer>
+
+    <script>
+        // File input display
+        document.getElementById('media').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || 'لم يتم اختيار ملف';
+            document.querySelector('.file-name').textContent = fileName;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  memories-album:
+    build: .
+    container_name: memories-album
+    ports:
+      - "3000:3000"
+    environment:
+      - VIEWER_PINCODE=0000
+      - USER_PINCODE=1234
+      - ADMIN_PINCODE=admin123
+      - SECRET_KEY=your-super-secret-key-change-me
+      - PORT=3000
+    volumes:
+      - ./uploads:/app/public/uploads
+    restart: unless-stopped
