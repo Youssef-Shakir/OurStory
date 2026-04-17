@@ -1,5 +1,8 @@
 version: '3.8'
 
+# Use this file for local development with bind mounts
+# Run with: docker-compose -f docker-compose.local.yml up --build
+
 services:
   memories-album:
     build: .
@@ -14,13 +17,7 @@ services:
       - SECRET_KEY=your-super-secret-key-change-me
       - PORT=3000
     volumes:
-      # Persistent storage for uploads and data
-      - uploads_data:/app/public/uploads
-      - app_data:/app/data
+      # Bind mounts - files stored in your project folder
+      - ./uploads:/app/public/uploads
+      - ./data:/app/data
     restart: unless-stopped
-
-volumes:
-  uploads_data:
-    driver: local
-  app_data:
-    driver: local

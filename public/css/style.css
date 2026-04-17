@@ -377,6 +377,162 @@ header {
     box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
 }
 
+.btn-logs {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+.btn-logs:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+}
+
+.btn-back {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 2px solid var(--border);
+    padding: 10px 20px;
+    font-size: 0.95rem;
+}
+
+.btn-back:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.btn-clear {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-clear:hover {
+    background: var(--error);
+    color: white;
+}
+
+/* Logs Page */
+.logs-section {
+    background: var(--bg-card);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.logs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.logs-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+    color: var(--text);
+}
+
+.logs-header h2 svg {
+    width: 24px;
+    height: 24px;
+    color: var(--primary-light);
+}
+
+.logs-table-wrapper {
+    overflow-x: auto;
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.logs-table th,
+.logs-table td {
+    padding: 16px 20px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+}
+
+.logs-table th {
+    background: var(--bg-light);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.logs-table td {
+    color: var(--text);
+}
+
+.logs-table tr:hover {
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.logs-table tr.failed {
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.logs-table tr.failed:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.timestamp {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.ip {
+    font-family: monospace;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.role-badge.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.role-badge.failed {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.status.failed {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
 .logo {
     display: flex;
     align-items: center;
